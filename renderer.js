@@ -2,7 +2,7 @@ const { remote } = require('electron')
 const fn = remote.require('./fn')
 window.fn = fn
 
-const url = 'C:/data/Mirax2-Fluorescence-2.mrxs'
+const url = './test_file/Mirax2-Fluorescence-2.mrxs'
 fn.getThumbnail(url, async buffer => {
   // window.buffer = buffer
   let imgBit = await createImageBitmap(new Blob([buffer], { type: 'image/jpeg' }))
