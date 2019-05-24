@@ -7,7 +7,7 @@ exports.getInfos = async function (url, fn) {
     o[i] = img.get(i)
     return o
   }, {})
-  // console.log(infos)
+  console.log(infos)
   fn(infos)
 }
 
