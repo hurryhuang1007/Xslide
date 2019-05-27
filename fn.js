@@ -16,22 +16,12 @@ exports.getThumbnail = async function (url, fn) {
   fn(buffer2ArrayBuffer(await writeToJpgBuffer(img)))
 }
 
-function openslideload(url, props) {
-  return new Promise((res, rej) => {
-    vips.Image.openslideload(url, {
-      ...props,
-      async: (e, img) => e ? rej(e) : res(img)
-    })
-  })
+function openslideload(url, props = {}) {
+  return new Promise((res, rej) => vips.Image.openslideload(url, Object.assign(props,{async: (e, img) => e ? rej(e) : res(img)})))
 }
 
-function writeToJpgBuffer(img, props) {
-  return new Promise((res, rej) => {
-    img.writeToBuffer('.jpg', {
-      ...props,
-      async: (e, buffer) => e ? rej(e) : res(buffer)
-    })
-  })
+function writeToJpgBuffer(img, props = {}) {
+  return new Promise((res, rej) => img.writeToBuffer('.jpg', Object.assign(props,{async: (e, buffer) => e ? rej(e) : res(buffer)})))
 }
 
 function buffer2ArrayBuffer(buffer) {
