@@ -1,7 +1,7 @@
 'use strict';
 var ffi = require('ffi');
 const path = require('path')
-process.env.PATH = `${process.env.PATH}${path.delimiter}./vips_dll`
+process.env.PATH = `./vips_dll${path.delimiter}${process.env.PATH}`
 
 
 // TODO: Windows needs libvips-42

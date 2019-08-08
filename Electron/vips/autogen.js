@@ -303,6 +303,14 @@ module.exports = function (vips) {
     return vips.call('find_trim', this, options);
   };
 
+  vips.Image.fitsload = function (filename, options) {
+    return vips.call('fitsload', filename, options);
+  };
+
+  vips.Image.prototype.fitssave = function (filename, options) {
+    return vips.call('fitssave', this, filename, options);
+  };
+
   vips.Image.prototype.flatten = function (options) {
     return vips.call('flatten', this, options);
   };
@@ -621,6 +629,18 @@ module.exports = function (vips) {
 
   vips.Image.prototype.msb = function (options) {
     return vips.call('msb', this, options);
+  };
+
+  vips.Image.niftiload = function (filename, options) {
+    return vips.call('niftiload', filename, options);
+  };
+
+  vips.Image.prototype.niftisave = function (filename, options) {
+    return vips.call('niftisave', this, filename, options);
+  };
+
+  vips.Image.openexrload = function (filename, options) {
+    return vips.call('openexrload', filename, options);
   };
 
   vips.Image.openslideload = function (filename, options) {
