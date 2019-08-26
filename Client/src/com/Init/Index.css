@@ -1,0 +1,15 @@
+.Init{
+  width: 95vw;
+  height: 95vh;
+  margin: auto;
+  margin-top: 2.5vh;
+  border: 1px #565656 dashed;
+  border-radius: 4px;
+  background: #1e1e1e;
+  cursor: pointer;
+  text-align: center;
+}
+
+.Init:hover{
+  border-color: cornflowerblue;
+}
