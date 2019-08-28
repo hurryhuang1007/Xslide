@@ -6,6 +6,8 @@ require('./fn')
 let mainWindow
 function createWindow() {
   mainWindow = new BrowserWindow({
+    // show: false,
+    backgroundColor: '#000',
     width: 1800,
     height: 1200,
     webPreferences: {
@@ -15,9 +17,14 @@ function createWindow() {
     }
   })
 
-  isDev ? mainWindow.loadURL('http://127.0.0.1:3000') : mainWindow.loadFile(path.join('.', 'render', 'index.html'))
-  mainWindow.webContents.openDevTools()
+  if (isDev) {
+    mainWindow.webContents.openDevTools()
+    mainWindow.loadURL('http://127.0.0.1:3000')
+  } else {
+    mainWindow.loadFile(path.join('.', 'render', 'index.html'))
+  }
 
+  // mainWindow.once('ready-to-show', () => mainWindow.show())
   mainWindow.on('closed', function () {
     // Dereference the window object, usually you would store windows
     // in an array if your app supports multi windows, this is the time

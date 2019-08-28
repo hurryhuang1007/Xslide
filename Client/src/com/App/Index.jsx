@@ -7,6 +7,6 @@ export default class App extends React.Component {
   }
 
   render() {
-    return this.state.tilePath ? <h1>1</h1> : <Init />
+    return this.state.tilePath ? <h1>1</h1> : <Init inputFn={console.log} />
   }
 }
