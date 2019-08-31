@@ -2,7 +2,6 @@ import React from 'react'
 import { supportFileType, getFileTypeByURL } from '../../core'
 import Init from '../Init/Index'
 import Main from '../Main/Index'
-
 const remote = global.nodeRequire('electron').remote
 
 export default class App extends React.Component {
@@ -28,6 +27,6 @@ export default class App extends React.Component {
   }
 
   render() {
-    return this.state.tilePath ? <Main inputFn={this._fileInput} /> : <Init inputFn={this._fileInput} />
+    return this.state.tilePath ? <Main inputFn={this._fileInput} tilePath={this.state.tilePath} /> : <Init inputFn={this._fileInput} />
   }
 }

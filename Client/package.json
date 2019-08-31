@@ -8,7 +8,8 @@
     "better-react-spinkit": "^2.0.4",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
-    "react-scripts": "3.0.1"
+    "react-scripts": "3.0.1",
+    "uuid": "^3.3.3"
   },
   "scripts": {
     "start": "react-scripts start",
