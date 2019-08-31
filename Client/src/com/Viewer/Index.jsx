@@ -52,6 +52,8 @@ export default class Viewer extends React.Component {
       this._destroy()
       this.resetPosition()
       this.setState({ inited: false, loaded: false, error: false })
+      this._degree = 0
+      this.refs.canvas.getContext('2d').resetTransform()
       this._init(this.props.tilePath)
     }
   }
