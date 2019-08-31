@@ -1,9 +1,11 @@
 import React from 'react'
 import { Tooltip, Button } from '@material-ui/core'
 import { Inbox, Refresh, RotateLeft, RotateRight, Collections } from '@material-ui/icons'
-import { selectFile } from '../../core'
+import { selectFile, getFileTypeByURL, blob2BufferAsync } from '../../core'
 import Viewer from '../Viewer/Index'
 import './Index.css'
+const remote = global.nodeRequire('electron').remote
+const fs = global.nodeRequire('fs')
 
 export default class Main extends React.Component {
   componentDidMount() {
@@ -28,6 +30,22 @@ export default class Main extends React.Component {
 
   _reset = () => this.refs.viewer.resetPosition()
 
+  _save = async () => {
+    let path = remote.dialog.showSaveDialog(remote.getCurrentWindow(), {
+      filters: [
+        { name: 'JPG Image', extensions: ['jpg', 'jpeg'] },
+        { name: 'PNG Image', extensions: ['png'] },
+        { name: 'WEBP Image', extensions: ['webp'] },
+        { name: 'Images', extensions: ['jpg', 'png', 'webp'] }
+      ]
+    })
+    if (!path) return
+    let type = getFileTypeByURL(path)
+    if (!['jpg', 'jpeg', 'png', 'webp'].includes(type)) return remote.dialog.showErrorBox('Save Image Type Error!', 'Please choose jpg/png/webp image type to save.')
+    let blob = await this.refs.viewer.getImageBlobAsync(type)
+    fs.writeFile(path, await blob2BufferAsync(blob), e => { if (e) remote.dialog.showErrorBox('Save Image Error!', 'Please choose other image type to save.') })
+  }
+
   render() {
     return (
       <div className='Main'>
@@ -47,7 +65,7 @@ export default class Main extends React.Component {
           </div>
 
           <div className='Main-bar-end'>
-            <Tooltip title='Save the current display image to...'><Button className='Main-btn'><Collections /></Button></Tooltip>
+            <Tooltip title='Save the current display image to...'><Button className='Main-btn' onClick={this._save}><Collections /></Button></Tooltip>
           </div>
         </div>
 

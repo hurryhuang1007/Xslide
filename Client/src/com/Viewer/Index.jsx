@@ -398,6 +398,11 @@ export default class Viewer extends React.Component {
     this._changed = true
   }
 
+  getImageBlobAsync(type) {
+    if (type === 'jpg') type = 'jpeg'
+    return new Promise(res => this.refs.canvas.toBlob(res, `image/${type}`))
+  }
+
   render() {
     return (
       <div ref='mainDOM' style={{ position: 'relative', width: this.props.layoutWidth, height: this.props.layoutHeight }} >

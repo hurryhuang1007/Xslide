@@ -43,3 +43,11 @@ export function jpgBuffer2ImageAsync(buffer) {
     img.src = URL.createObjectURL(new global.Blob([buffer], { type: 'image/jpeg' }))
   })
 }
+
+export function blob2BufferAsync(blob) {
+  return new Promise(res => {
+    let fileReader = new global.FileReader()
+    fileReader.onload = () => res(new global.Uint8Array(fileReader.result))
+    fileReader.readAsArrayBuffer(blob)
+  })
+}
