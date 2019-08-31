@@ -1,4 +1,5 @@
 import React from 'react'
+import { vec2 } from 'gl-matrix'
 import { getFileTypeByURL, vipsFnPromise, jpgBuffer2ImageAsync } from '../../core'
 import { StateCover } from '../StateCover/Index'
 const screenSize = global.nodeRequire('electron').screen.getPrimaryDisplay().size
@@ -26,6 +27,7 @@ export default class Viewer extends React.Component {
   _thumbnail = null
   _thumbnailLevel = null
 
+  _degree = 0
   _zoom = 1
   // left&top记录的是百分比,而不是像素值
   _left = 0
@@ -125,26 +127,26 @@ export default class Viewer extends React.Component {
 
     let canvas = this.refs.canvas
     let ctx = canvas.getContext('2d')
-    // ctx.resetTransform()
-    ctx.clearRect(0, 0, canvas.width, canvas.height)
-    // ctx.transform(...this._transformInfo.mat)
-    // ctx.translate(...this._transformInfo.translate)
 
-    // let k = (canvas.width / canvas.height) / (this._thumbnail.width / this._thumbnail.height) > 1 ? 'height' : 'width'
+    let { width, height } = canvas
+    if (this._degree % 180 !== 0) [width, height] = [height, width]
+    ctx.clearRect(0, 0, width, height)
+
+    // let k = (width / height) / (this._thumbnail.width / this._thumbnail.height) > 1 ? 'height' : 'width'
     let k = this._infos.k
     let downSample = this._thumbnail[k] / canvas[k] / this._zoom
-    let w = this._thumbnail.width / downSample > canvas.width ? canvas.width * downSample : this._thumbnail.width
-    let h = this._thumbnail.height / downSample > canvas.height ? canvas.height * downSample : this._thumbnail.height
+    let w = this._thumbnail.width / downSample > width ? width * downSample : this._thumbnail.width
+    let h = this._thumbnail.height / downSample > height ? height * downSample : this._thumbnail.height
     // console.log('width,height', width, height)
 
-    let sx = Math.max((this._thumbnail.width - canvas.width * downSample) / 2 - this._left * this._thumbnail[k], 0)
-    let sy = Math.max((this._thumbnail.height - canvas.height * downSample) / 2 - this._top * this._thumbnail[k], 0)
+    let sx = Math.max((this._thumbnail.width - width * downSample) / 2 - this._left * this._thumbnail[k], 0)
+    let sy = Math.max((this._thumbnail.height - height * downSample) / 2 - this._top * this._thumbnail[k], 0)
     let dw = w / downSample
     let dh = h / downSample
-    let dx = (canvas.width - dw) / 2 + this._thumbnail[k] / downSample * this._left + (sx - (this._thumbnail.width - w) / 2) / downSample
-    let dy = (canvas.height - dh) / 2 + this._thumbnail[k] / downSample * this._top + (sy - (this._thumbnail.height - h) / 2) / downSample
-    let sw = Math.min((canvas.width - dx) * downSample, w, this._thumbnail.width - sx)
-    let sh = Math.min((canvas.height - dy) * downSample, h, this._thumbnail.height - sy)
+    let dx = (width - dw) / 2 + this._thumbnail[k] / downSample * this._left + (sx - (this._thumbnail.width - w) / 2) / downSample
+    let dy = (height - dh) / 2 + this._thumbnail[k] / downSample * this._top + (sy - (this._thumbnail.height - h) / 2) / downSample
+    let sw = Math.min((width - dx) * downSample, w, this._thumbnail.width - sx)
+    let sh = Math.min((height - dy) * downSample, h, this._thumbnail.height - sy)
     dw = sw / downSample
     dh = sh / downSample
 
@@ -359,8 +361,10 @@ export default class Viewer extends React.Component {
     if (this._moveActive) {
       e.preventDefault()
       e.stopPropagation()
-      this._left += e.movementX * this._currentState.globalDownSample / this._infos[this._infos.k]
-      this._top += e.movementY * this._currentState.globalDownSample / this._infos[this._infos.k]
+
+      let vec = vec2.rotate([], [e.movementX, e.movementY], [0, 0], -this._degree * Math.PI / 180)
+      this._left += vec[0] * this._currentState.globalDownSample / this._infos[this._infos.k]
+      this._top += vec[1] * this._currentState.globalDownSample / this._infos[this._infos.k]
       this._changed = true
       // console.log('!!!', e.movementX / canvas.width, e.movementY / canvas.height)
     }
@@ -388,6 +392,8 @@ export default class Viewer extends React.Component {
     let pixelRatio = window.devicePixelRatio
     canvas.width = this.props.layoutWidth * pixelRatio
     canvas.height = this.props.layoutHeight * pixelRatio
+    this._degree = 0
+    // canvas.getContext('2d').imageSmoothingEnabled = false
     this._changed = true
   }
 
@@ -395,6 +401,19 @@ export default class Viewer extends React.Component {
     this._zoom = 1
     this._left = 0
     this._top = 0
+    this._changed = true
+  }
+
+  rotate(isClockwise = true) {
+    let degree = isClockwise ? 90 : -90
+    this._degree += degree
+    let canvas = this.refs.canvas
+    let ctx = canvas.getContext('2d')
+    ctx.rotate(degree * Math.PI / 180)
+
+    let { width, height } = canvas
+    if (this._degree % 180 !== 0) [width, height] = [height, width]
+    isClockwise ? ctx.translate(0, -height) : ctx.translate(-width, 0)
     this._changed = true
   }
 

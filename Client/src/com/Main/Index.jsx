@@ -30,6 +30,10 @@ export default class Main extends React.Component {
 
   _reset = () => this.refs.viewer.resetPosition()
 
+  _counterclockwise = () => this.refs.viewer.rotate(false)
+
+  _clockwise = () => this.refs.viewer.rotate(true)
+
   _save = async () => {
     let path = remote.dialog.showSaveDialog(remote.getCurrentWindow(), {
       filters: [
@@ -60,8 +64,8 @@ export default class Main extends React.Component {
 
           <div>
             <Tooltip title='Reset position and zoom'><Button className='Main-btn' onClick={this._reset}><Refresh /></Button></Tooltip>
-            <Tooltip title='Rotate 90° counterclockwise'><Button className='Main-btn'><RotateLeft /></Button></Tooltip>
-            <Tooltip title='Rotate 90° clockwise'><Button className='Main-btn'><RotateRight /></Button></Tooltip>
+            <Tooltip title='Rotate 90° counterclockwise'><Button className='Main-btn' onClick={this._counterclockwise}><RotateLeft /></Button></Tooltip>
+            <Tooltip title='Rotate 90° clockwise'><Button className='Main-btn' onClick={this._clockwise}><RotateRight /></Button></Tooltip>
           </div>
 
           <div className='Main-bar-end'>

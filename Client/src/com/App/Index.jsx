@@ -6,8 +6,7 @@ const remote = global.nodeRequire('electron').remote
 
 export default class App extends React.Component {
   state = {
-    // tilePath: null
-    tilePath: 'c:/workspace/Mirax2.2-1.jpg'
+    tilePath: null
   }
 
   _fileInput = tilePath => {
