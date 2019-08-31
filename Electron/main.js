@@ -1,13 +1,15 @@
 const path = require('path')
-const { app, BrowserWindow } = require('electron')
+const { app, BrowserWindow, Menu } = require('electron')
 const isDev = require('electron-is-dev')
 require('./fn')
 
 let mainWindow
 function createWindow() {
+  Menu.setApplicationMenu(null)
+
   mainWindow = new BrowserWindow({
     // show: false,
-    backgroundColor: '#000',
+    // backgroundColor: '#000',
     width: 1800,
     height: 1200,
     webPreferences: {

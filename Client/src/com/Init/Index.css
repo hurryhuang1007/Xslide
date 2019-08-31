@@ -5,7 +5,7 @@
   margin: auto;
   margin-top: 2.5vh;
   text-align: center;
-  background: #1e1e1e;
+  background: #fafafa;
 }
 
 .Init-cover{
@@ -14,11 +14,12 @@
   height: 100%;
   top: 0;
   left: 0;
-  border: 1px #565656 dashed;
+  border: 1px #d9d9d9 dashed;
   border-radius: 4px;
+  transition: border-color .3s;
   cursor: pointer;
 }
 
 .Init-cover:hover, .Init-cover-drag-over{
-  border-color: cornflowerblue;
+  border-color: #40a9ff;
 }
