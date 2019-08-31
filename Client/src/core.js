@@ -30,7 +30,7 @@ export function selectFile(callback) {
 export function vipsFnPromise(fnName, args = []) {
   return new Promise((resolve, reject) => {
     let callbackChannel = uuidv1()
-    ipcRenderer.once(callbackChannel, (e, result) => resolve(result))
+    ipcRenderer.once(callbackChannel, (e, result) => result.type === 'error' ? reject(result) : resolve(result))
     ipcRenderer.send('vips_fn', callbackChannel, { fnName, args })
   })
 }

@@ -7,11 +7,18 @@ const { ipcMain } = require('electron')
 // let queue = new PQueue({concurrency: Math.max(require('os').cpus().length * 2, 1)})
 let imageObjectPool = {}
 let imageObjectLoadedFn = {}
-const fnName2Fn = {getInfos, getThumbnail, getImage}
-ipcMain.on('vips_fn', async (e, callbackChannel, message) => e.sender.send(callbackChannel, await fnName2Fn[message.fnName](...message.args)))
+const fnName2Fn = { getInfos, getThumbnail, getImage }
+ipcMain.on('vips_fn', async (e, callbackChannel, message) => {
+  try {
+    e.sender.send(callbackChannel, await fnName2Fn[message.fnName](...message.args))
+  } catch (err) {
+    err.type = 'error'
+    e.sender.send(callbackChannel, err)
+  }
+})
 // ipcMain.on('vips_fn', async (e, callbackChannel, message) => e.sender.send(callbackChannel, await queue.add(async () => await fnName2Fn[message.fnName](...message.args))))
 
-async function getInfos (url) {
+async function getInfos(url) {
   let img = await getImageObject(url)
   let infos = img.getFields().reduce((o, i) => {
     o[i] = img.get(i)
@@ -21,20 +28,20 @@ async function getInfos (url) {
   return infos
 }
 
-async function getThumbnail (url, props = {}) {
+async function getThumbnail(url, props = {}) {
   let img = await getImageObject(url, props)
   if (!props.associated) return await thumbnailImageBuffer(img, 3000)
   return await writeToJpgBuffer(img)
 }
 
-async function getImage (url, props = {}) {
+async function getImage(url, props = {}) {
   // props.autocrop = true
   let img = await getImageObject(url, props)
-  if (props.left || props.top ||props.width || props.height) img = await crop(img, props)
+  if (props.left || props.top || props.width || props.height) img = await crop(img, props)
   return await writeToJpgBuffer(img)
 }
 
-function thumbnailImageBuffer (img, width) {
+function thumbnailImageBuffer(img, width) {
   return new Promise(async (res, rej) => {
     if (img.width <= width) {
       res(await writeToJpgBuffer(img))
@@ -54,16 +61,16 @@ function thumbnailImageBuffer (img, width) {
         } else {
           let buffer = await writeToJpgBuffer(i)
           res(buffer)
-          fs.writeFile(thumbnailFilename, buffer, e => {})
+          fs.writeFile(thumbnailFilename, buffer, e => { })
         }
       }
     })
   })
 }
 
-function crop (img, props = {}) {
+function crop(img, props = {}) {
   return new Promise((res, rej) => {
-    if (!props.left && !props.top &&!props.width && !props.height) {
+    if (!props.left && !props.top && !props.width && !props.height) {
       res(img)
       return
     }
@@ -71,17 +78,17 @@ function crop (img, props = {}) {
     let top = props.top || 0
     let width = props.width ? Math.min(props.width, img.width - left) : (img.width - left)
     let height = props.height ? Math.min(props.height, img.height - top) : (img.height - top)
-    img.crop(left, top, width, height, {async: (e, img) => e ? rej(e) : res(img)})
+    img.crop(left, top, width, height, { async: (e, img) => e ? rej(e) : res(img) })
   })
 }
 
 function writeToJpgBuffer(img, props = {}) {
-  return new Promise((res, rej) => img.writeToBuffer('.jpg', Object.assign(props, {async: (e, buffer) => e ? rej(e) : res(buffer)})))
+  return new Promise((res, rej) => img.writeToBuffer('.jpg', Object.assign(props, { async: (e, buffer) => e ? rej(e) : res(buffer) })))
   // return new Promise((res, rej) => res(img.writeToBuffer('.jpg', props)))
 }
 
 function getImageObject(url, props = {}) {
-  return new Promise((res,rej) => {
+  return new Promise((res, rej) => {
     if (props.associated && props.level) {
       rej('specify only one of level or associated image')
       return
@@ -92,7 +99,7 @@ function getImageObject(url, props = {}) {
       return
     }
     if (imageObjectLoadedFn[k]) {
-      imageObjectLoadedFn[k].push({res, rej})
+      imageObjectLoadedFn[k].push({ res, rej })
       return
     }
     // log.info('init image object, k:' + k)

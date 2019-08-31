@@ -1,5 +1,6 @@
 import React from 'react'
 import { getFileTypeByURL, vipsFnPromise, jpgBuffer2ImageAsync } from '../../core'
+import { StateCover } from '../StateCover/Index'
 const screenSize = global.nodeRequire('electron').screen.getPrimaryDisplay().size
 
 function splitKofTile(KofTile) {
@@ -401,7 +402,7 @@ export default class Viewer extends React.Component {
     return (
       <div ref='mainDOM' style={{ position: 'relative', width: this.props.layoutWidth, height: this.props.layoutHeight }} >
         <canvas ref='canvas' />
-        {/* <StateCover {...this.state} /> */}
+        <StateCover {...this.state} />
       </div>
     )
   }
