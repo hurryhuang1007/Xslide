@@ -27,7 +27,8 @@ export default class Init extends React.Component {
         <div style={{ paddingTop: '40vh' }}>
           <Inbox fontSize='large' style={{ fontSize: '85px', color: '#40a9ff' }} />
           <h2>Click or drag file to this area to view</h2>
-          <p>Support tiff, svs, mrxs, jpg and png file(s)</p>
+          <p>Support tif, svs, mrxs, bif, hdpi, vms, vmu, jpg and png file(s)</p>
+          <p>scn, tiff and svslide are also theoretically supported, but it has not been confirmed.</p>
         </div>
 
         <div className='Init-cover' ref='cover'

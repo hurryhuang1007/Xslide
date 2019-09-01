@@ -1,7 +1,10 @@
 import uuidv1 from 'uuid/v1'
 const { remote, ipcRenderer } = global.nodeRequire('electron')
 
-const supportFileType = ['jpg', 'jpeg', 'png', 'tif', 'svs', 'mrxs']
+const supportFileType = [
+  'jpg', 'jpeg', 'png', 'tif', 'svs', 'mrxs', 'bif', 'hdpi', 'vms', 'vmu',
+  'scn', 'tiff', 'svslide'
+]
 
 export {
   supportFileType
