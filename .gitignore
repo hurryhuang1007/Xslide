@@ -8,6 +8,7 @@ node_modules
 
 # production
 /Electron/render
+/Electron/dist
 
 # misc
 .DS_Store
