@@ -2,6 +2,8 @@
 
 An application that can quickly view large images like .tif, .svs, .bif, .hdpi, .vms and .mrxs file(s).
 
+[Download](https://github.com/hurryhuang1007/Xslide/releases)
+
 ## Screenshot
 
 ![init](./screenshot/init.jpg)
